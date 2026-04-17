@@ -1,0 +1,160 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FrameFlow | Вход</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="hero-block">
+            <div class="nav-left">
+                <img src="photo_for_profile/Logo.png" alt="Логотип FrameFlow">
+            </div>
+            <div class="nav-links">
+                <a href="login.html" class="active">Вход</a>
+                <a href="index.html">Главная</a>
+                <a href="profile.html">Профиль</a>
+                <a href="gallery.html">Галерея</a>
+            </div>
+            <div class="nav-social">
+                <a href="https://www.tiktok.com/@Soukog" target="_blank" rel="noopener noreferrer"><img src="photo_for_profile/tiktok-icon.svg" alt="TikTok" width="24"></a>
+                <a href="https://vk.com/id569348106" target="_blank" rel="noopener noreferrer"><img src="photo_for_profile/Vk SVG Icon.svg" alt="VK" width="24"></a>
+                <a href="https://t.me/Soukog06" target="_blank" rel="noopener noreferrer"><img src="photo_for_profile/telegram-svgrepo-com.svg" alt="Telegram" width="24"></a>
+            </div>
+        </nav>
+    </div>
+
+    <main class="container">
+        <section class="card auth-layout">
+            <section class="auth-panel" aria-labelledby="auth-title">
+                <h1 id="auth-title" class="page-title">Вход в личный кабинет</h1>
+                <p class="muted-note">Форма соответствует базовым веб-стандартам: корректные поля, автозаполнение и валидация.</p>
+
+                <form id="login-form" class="auth-form">
+                    <label class="auth-label" for="login-email">Email</label>
+                    <input id="login-email" class="auth-input" name="email" type="email" autocomplete="username" inputmode="email" required placeholder="you@example.com">
+
+                    <label class="auth-label" for="login-password">Пароль</label>
+                    <div class="password-wrap">
+                        <input id="login-password" class="auth-input" name="password" type="password" autocomplete="current-password" required minlength="6" placeholder="Минимум 6 символов">
+                        <button id="password-toggle" type="button" class="password-toggle" aria-controls="login-password" aria-label="Показать пароль">Показать</button>
+                    </div>
+
+                    <div class="auth-options">
+                        <label class="auth-check">
+                            <input id="remember-me" type="checkbox" name="remember-me">
+                            Запомнить email на этом устройстве
+                        </label>
+                        <a class="auth-link" href="Contats.HTML">Забыли пароль?</a>
+                    </div>
+
+                    <button type="submit" class="registration-button">Войти</button>
+                    <p id="login-status" class="status-message" aria-live="polite"></p>
+                </form>
+            </section>
+
+            <aside class="auth-side" aria-label="Дополнительная информация о входе">
+                <h2>Как сделать вход полезнее</h2>
+                <ul>
+                    <li>Показывать последние действия пользователя после авторизации.</li>
+                    <li>Добавить модуль «быстрые задачи» в личном кабинете.</li>
+                    <li>Использовать 2FA через телефон или email (в серверной версии).</li>
+                    <li>Выводить короткую справку по безопасности аккаунта.</li>
+                </ul>
+
+                <div class="auth-links">
+                    <a class="button" href="registration.html">Создать аккаунт</a>
+                    <a class="button button-secondary" href="Cofedensi.html">Политика данных</a>
+                </div>
+            </aside>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <p>&copy; 2026 FrameFlow. Все права защищены.</p>
+            <ul class="footer-links">
+                <li><a href="Cofedensi.html">Политика конфиденциальности</a></li>
+                <li><a href="Contats.HTML">Контакты</a></li>
+            </ul>
+        </div>
+    </footer>
+
+    <script>
+        (function () {
+            const LOGIN_PREFS_KEY = "ff_login_prefs_v1";
+
+            const form = document.getElementById("login-form");
+            const emailInput = document.getElementById("login-email");
+            const passwordInput = document.getElementById("login-password");
+            const rememberInput = document.getElementById("remember-me");
+            const status = document.getElementById("login-status");
+            const passwordToggle = document.getElementById("password-toggle");
+
+            function setStatus(message, isError) {
+                status.textContent = message;
+                status.className = "status-message " + (isError ? "status-error" : "status-ok");
+            }
+
+            function loadLoginPrefs() {
+                const raw = localStorage.getItem(LOGIN_PREFS_KEY);
+                if (!raw) {
+                    return;
+                }
+
+                try {
+                    const prefs = JSON.parse(raw);
+                    if (prefs && typeof prefs.email === "string") {
+                        emailInput.value = prefs.email;
+                        rememberInput.checked = true;
+                    }
+                } catch (error) {
+                    setStatus("Не удалось загрузить сохранённый email", true);
+                }
+            }
+
+            function persistLoginPrefs() {
+                if (!rememberInput.checked) {
+                    localStorage.removeItem(LOGIN_PREFS_KEY);
+                    return;
+                }
+
+                localStorage.setItem(LOGIN_PREFS_KEY, JSON.stringify({
+                    email: emailInput.value.trim(),
+                    updatedAt: new Date().toISOString()
+                }));
+            }
+
+            passwordToggle.addEventListener("click", function () {
+                const isHidden = passwordInput.type === "password";
+                passwordInput.type = isHidden ? "text" : "password";
+                passwordToggle.textContent = isHidden ? "Скрыть" : "Показать";
+                passwordToggle.setAttribute("aria-label", isHidden ? "Скрыть пароль" : "Показать пароль");
+            });
+
+            form.addEventListener("submit", function (event) {
+                event.preventDefault();
+
+                if (!form.checkValidity()) {
+                    form.reportValidity();
+                    return;
+                }
+
+                try {
+                    persistLoginPrefs();
+                    setStatus("Вход выполнен. Перенаправление в профиль...", false);
+                    window.setTimeout(function () {
+                        window.location.href = "profile.html";
+                    }, 650);
+                } catch (error) {
+                    setStatus("Ошибка при сохранении данных входа", true);
+                }
+            });
+
+            loadLoginPrefs();
+        })();
+    </script>
+</body>
+</html>

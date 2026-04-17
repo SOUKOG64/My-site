@@ -1,0 +1,357 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FrameFlow | Профиль пользователя</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="hero-block">
+            <div class="nav-left">
+                <img src="photo_for_profile/Logo.png" alt="Логотип FrameFlow">
+            </div>
+            <div class="nav-links">
+                <a href="login.html">Вход</a>
+                <a href="index.html">Главная</a>
+                <a href="profile.html" class="active">Профиль</a>
+                <a href="gallery.html">Галерея</a>
+            </div>
+            <div class="nav-social">
+                <a href="https://www.tiktok.com/@Soukog" target="_blank" rel="noopener noreferrer"><img src="photo_for_profile/tiktok-icon.svg" alt="TikTok" width="24"></a>
+                <a href="https://vk.com/id569348106" target="_blank" rel="noopener noreferrer"><img src="photo_for_profile/Vk SVG Icon.svg" alt="VK" width="24"></a>
+                <a href="https://t.me/Soukog06" target="_blank" rel="noopener noreferrer"><img src="photo_for_profile/telegram-svgrepo-com.svg" alt="Telegram" width="24"></a>
+            </div>
+        </nav>
+    </div>
+
+    <main class="container">
+        <section class="card">
+            <h1 class="page-title">Профиль пользователя</h1>
+            <p class="muted-note">Данные сохраняются на сервере Node.js. Пароль не сохраняется.</p>
+
+            <div class="profile-layout">
+                <form id="profile-form" class="profile-form">
+                    <label for="nickname">Имя пользователя (логин/nickname)
+                        <input id="nickname" name="nickname" type="text" autocomplete="username" required minlength="2" maxlength="30" placeholder="Например: Soukog">
+                    </label>
+
+                    <label for="email">Email
+                        <input id="email" name="email" type="email" autocomplete="email" required placeholder="example@mail.com">
+                    </label>
+
+                    <label for="password">Пароль
+                        <input id="password" name="password" type="password" autocomplete="new-password" required minlength="6" placeholder="Минимум 6 символов">
+                    </label>
+
+                    <label for="phone">Номер телефона
+                        <input id="phone" name="phone" type="tel" autocomplete="tel" required pattern="^\+?[0-9\s\-()]{7,20}$" placeholder="+7 (999) 123-45-67">
+                    </label>
+
+                    <p class="profile-hint">После сохранения пароль очищается и не записывается в хранилище.</p>
+                    <button type="submit" class="registration-button">Сохранить профиль</button>
+                    <p id="profile-status" class="status-message" aria-live="polite"></p>
+                </form>
+
+                <aside class="profile-preview">
+                    <h3>Предпросмотр</h3>
+                    <dl>
+                        <div>
+                            <dt>Nickname</dt>
+                            <dd id="preview-nickname">-</dd>
+                        </div>
+                        <div>
+                            <dt>Email</dt>
+                            <dd id="preview-email">-</dd>
+                        </div>
+                        <div>
+                            <dt>Телефон</dt>
+                            <dd id="preview-phone">-</dd>
+                        </div>
+                    </dl>
+                </aside>
+            </div>
+
+            <section class="services-panel" aria-labelledby="services-title">
+                <h3 id="services-title">Мои сервисы</h3>
+                <form id="services-form" class="services-form" novalidate>
+                    <input id="service-url" name="service-url" type="url" inputmode="url" placeholder="Вставьте ссылку на сервис, например 500px.com" required>
+                    <button type="submit" class="services-add-btn">Добавить</button>
+                </form>
+                <p id="services-status" class="status-message" aria-live="polite"></p>
+                <ul id="services-list" class="services-list"></ul>
+                <div id="services-empty" class="empty-box">Пока нет ссылок. Добавьте первый сервис.</div>
+            </section>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <p>&copy; 2026 FrameFlow. Все права защищены.</p>
+            <ul class="footer-links">
+                <li><a href="Cofedensi.html">Политика конфиденциальности</a></li>
+                <li><a href="Contats.HTML">Контакты</a></li>
+            </ul>
+        </div>
+    </footer>
+
+    <script>
+        (function () {
+            const API_USER_DATA = "/api/user-data";
+
+            const form = document.getElementById("profile-form");
+            const nicknameInput = document.getElementById("nickname");
+            const emailInput = document.getElementById("email");
+            const passwordInput = document.getElementById("password");
+            const phoneInput = document.getElementById("phone");
+            const status = document.getElementById("profile-status");
+
+            const previewNickname = document.getElementById("preview-nickname");
+            const previewEmail = document.getElementById("preview-email");
+            const previewPhone = document.getElementById("preview-phone");
+
+            const servicesForm = document.getElementById("services-form");
+            const serviceUrlInput = document.getElementById("service-url");
+            const servicesStatus = document.getElementById("services-status");
+            const servicesList = document.getElementById("services-list");
+            const servicesEmpty = document.getElementById("services-empty");
+
+            let servicesCache = [];
+
+            function setStatus(message, isError) {
+                status.textContent = message;
+                status.className = "status-message " + (isError ? "status-error" : "status-ok");
+            }
+
+            function setServicesStatus(message, isError) {
+                servicesStatus.textContent = message;
+                servicesStatus.className = "status-message " + (isError ? "status-error" : "status-ok");
+            }
+
+            function updatePreview() {
+                previewNickname.textContent = nicknameInput.value.trim() || "-";
+                previewEmail.textContent = emailInput.value.trim() || "-";
+                previewPhone.textContent = phoneInput.value.trim() || "-";
+            }
+
+            async function fetchUserData() {
+                const response = await fetch(API_USER_DATA, { cache: "no-store" });
+                if (!response.ok) {
+                    throw new Error("server unavailable");
+                }
+                return response.json();
+            }
+
+            async function saveProfileToServer(profile) {
+                const response = await fetch("/api/user-data/profile", {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(profile)
+                });
+                if (!response.ok) {
+                    throw new Error("profile save failed");
+                }
+            }
+
+            async function saveServicesToServer(items) {
+                const response = await fetch("/api/user-data/services", {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(items)
+                });
+                if (!response.ok) {
+                    throw new Error("services save failed");
+                }
+            }
+
+            function renderServices(items) {
+                servicesList.innerHTML = "";
+
+                if (items.length === 0) {
+                    servicesEmpty.style.display = "block";
+                    return;
+                }
+
+                servicesEmpty.style.display = "none";
+
+                items.forEach(function (item) {
+                    const li = document.createElement("li");
+                    li.className = "service-item";
+
+                    const link = document.createElement("a");
+                    link.className = "service-link";
+                    link.href = item.url;
+                    link.target = "_blank";
+                    link.rel = "noopener noreferrer";
+                    link.textContent = item.label || item.url;
+
+                    const removeBtn = document.createElement("button");
+                    removeBtn.type = "button";
+                    removeBtn.className = "service-remove-btn";
+                    removeBtn.dataset.id = item.id;
+                    removeBtn.textContent = "Удалить";
+
+                    li.appendChild(link);
+                    li.appendChild(removeBtn);
+                    servicesList.appendChild(li);
+                });
+            }
+
+            function normalizeServiceUrl(value) {
+                const input = value.trim();
+                if (!input) {
+                    return null;
+                }
+
+                const withProtocol = /^https?:\/\//i.test(input) ? input : "https://" + input;
+
+                let parsed;
+                try {
+                    parsed = new URL(withProtocol);
+                } catch (error) {
+                    return null;
+                }
+
+                if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+                    return null;
+                }
+
+                const host = parsed.hostname.toLowerCase();
+                if (!host.includes(".") && host !== "localhost") {
+                    return null;
+                }
+
+                return parsed.href;
+            }
+
+            function createServiceLabel(url) {
+                try {
+                    const parsed = new URL(url);
+                    const host = parsed.hostname.replace(/^www\./i, "");
+                    const path = parsed.pathname && parsed.pathname !== "/" ? parsed.pathname : "";
+                    return host + path;
+                } catch (error) {
+                    return url;
+                }
+            }
+
+            async function handleSaveProfile(event) {
+                event.preventDefault();
+
+                if (!form.checkValidity()) {
+                    form.reportValidity();
+                    return;
+                }
+
+                const data = {
+                    nickname: nicknameInput.value.trim(),
+                    email: emailInput.value.trim(),
+                    phone: phoneInput.value.trim()
+                };
+
+                try {
+                    await saveProfileToServer(data);
+                    passwordInput.value = "";
+                    setStatus("Профиль сохранён на сервере. Пароль не хранится.", false);
+                    updatePreview();
+                } catch (error) {
+                    setStatus("Ошибка сервера при сохранении профиля", true);
+                }
+            }
+
+            async function handleAddService(event) {
+                event.preventDefault();
+
+                const normalizedUrl = normalizeServiceUrl(serviceUrlInput.value);
+                if (!normalizedUrl) {
+                    setServicesStatus("Введите корректный URL (http или https)", true);
+                    return;
+                }
+
+                const exists = servicesCache.some(function (item) {
+                    return item.url === normalizedUrl;
+                });
+
+                if (exists) {
+                    setServicesStatus("Такая ссылка уже добавлена", true);
+                    return;
+                }
+
+                const nextServices = [
+                    {
+                        id: Date.now().toString(36) + "_" + Math.random().toString(36).slice(2),
+                        url: normalizedUrl,
+                        label: createServiceLabel(normalizedUrl),
+                        createdAt: new Date().toISOString()
+                    }
+                ].concat(servicesCache);
+
+                try {
+                    await saveServicesToServer(nextServices);
+                    servicesCache = nextServices;
+                    renderServices(servicesCache);
+                    serviceUrlInput.value = "";
+                    setServicesStatus("Ссылка добавлена", false);
+                } catch (error) {
+                    setServicesStatus("Ошибка сервера при сохранении ссылки", true);
+                }
+            }
+
+            async function handleRemoveService(event) {
+                const target = event.target;
+                if (!(target instanceof HTMLElement) || !target.classList.contains("service-remove-btn")) {
+                    return;
+                }
+
+                const id = target.dataset.id;
+                if (!id) {
+                    return;
+                }
+
+                const nextServices = servicesCache.filter(function (item) {
+                    return item.id !== id;
+                });
+
+                try {
+                    await saveServicesToServer(nextServices);
+                    servicesCache = nextServices;
+                    renderServices(servicesCache);
+                    setServicesStatus("Ссылка удалена", false);
+                } catch (error) {
+                    setServicesStatus("Ошибка сервера при удалении ссылки", true);
+                }
+            }
+
+            async function initialize() {
+                try {
+                    const data = await fetchUserData();
+                    const profile = data && data.profile ? data.profile : {};
+                    nicknameInput.value = typeof profile.nickname === "string" ? profile.nickname : "";
+                    emailInput.value = typeof profile.email === "string" ? profile.email : "";
+                    phoneInput.value = typeof profile.phone === "string" ? profile.phone : "";
+
+                    servicesCache = Array.isArray(data && data.services) ? data.services : [];
+                    renderServices(servicesCache);
+                    updatePreview();
+                } catch (error) {
+                    renderServices([]);
+                    updatePreview();
+                    setStatus("Сервер недоступен. Запустите Node.js сервер.", true);
+                    setServicesStatus("Сервер недоступен. Список сервисов не загружен.", true);
+                }
+            }
+
+            [nicknameInput, emailInput, phoneInput].forEach(function (input) {
+                input.addEventListener("input", updatePreview);
+            });
+
+            servicesForm.addEventListener("submit", handleAddService);
+            servicesList.addEventListener("click", handleRemoveService);
+            form.addEventListener("submit", handleSaveProfile);
+
+            initialize();
+        })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+﻿{
+  "name": "frameflow-node-storage",
+  "version": "1.0.0",
+  "private": true,
+  "description": "FrameFlow static site with Node.js user data storage",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

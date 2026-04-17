@@ -1,0 +1,324 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FrameFlow | Платформа фотографа</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="hero-block">
+            <div class="nav-left">
+                <img src="photo_for_profile/Logo.png" alt="Логотип FrameFlow">
+            </div>
+            <div class="nav-links">
+                <a href="login.html">Вход</a>
+                <a href="index.html" class="active">Главная</a>
+                <a href="profile.html">Профиль</a>
+                <a href="gallery.html">Галерея</a>
+            </div>
+            <div class="nav-social">
+                <a href="https://www.tiktok.com/@Soukog" target="_blank" rel="noopener noreferrer"><img src="photo_for_profile/tiktok-icon.svg" alt="TikTok" width="24"></a>
+                <a href="https://vk.com/id569348106" target="_blank" rel="noopener noreferrer"><img src="photo_for_profile/Vk SVG Icon.svg" alt="VK" width="24"></a>
+                <a href="https://t.me/Soukog06" target="_blank" rel="noopener noreferrer"><img src="photo_for_profile/telegram-svgrepo-com.svg" alt="Telegram" width="24"></a>
+            </div>
+        </nav>
+    </div>
+
+    <main class="container">
+        <section class="card">
+            <h1 class="hero-title">FrameFlow</h1>
+            <p class="lead">
+                Многофункциональная платформа для фотографа-любителя: загружайте снимки, формируйте портфолио,
+                храните профиль и коллекцию сервисов в одном месте.
+            </p>
+
+            <div class="feature-grid">
+                <article class="feature-item">
+                    <h3>Локальная галерея</h3>
+                    <p>Пользователь добавляет фото напрямую из браузера с валидацией формата, размера и ограничением по количеству.</p>
+                </article>
+                <article class="feature-item">
+                    <h3>Профиль + сервисы</h3>
+                    <p>Система хранит профиль и список внешних фотосервисов через Node.js API в JSON-файле с проверкой URL и защитой от дублей.</p>
+                </article>
+                <article class="feature-item">
+                    <h3>Статическая архитектура</h3>
+                    <p>Проект работает без базы данных: frontend + Node.js сервер с файловым хранением, что удобно для учебного отчёта.</p>
+                </article>
+            </div>
+
+            <div class="btn-row">
+                <a class="button" href="gallery.html">Открыть галерею</a>
+                <a class="button button-secondary" href="profile.html">Настроить профиль</a>
+            </div>
+        </section>
+
+        <section class="card info-hub">
+            <h2 class="page-title">Архитектура и логика проекта</h2>
+            <p class="muted-note">Раздел объясняет, как устроен сайт, какие задачи он решает и какие ограничения есть у файлового backend-подхода.</p>
+
+            <div class="info-grid">
+                <article class="info-block">
+                    <h3>Назначение платформы</h3>
+                    <p>FrameFlow создан как учебная многофункциональная площадка для фотографа. В одном интерфейсе пользователь получает доступ к галерее, личному кабинету, списку сервисов и справочным материалам. Основная цель — показать, как можно собрать комплексный веб-проект на чистом HTML, CSS и JavaScript, сохранив понятный интерфейс для реальной работы с контентом.</p>
+                </article>
+                <article class="info-block">
+                    <h3>Модель хранения данных</h3>
+                    <p>Пользовательские данные сохраняются на Node.js сервере в JSON-файле. Для галереи передаются Data URL, для профиля — структурированный объект с идентификационными полями, для сервисов — список ссылок с идентификатором и меткой. Такой подход не требует базы данных, но требует запущенного локального сервера.</p>
+                </article>
+                <article class="info-block">
+                    <h3>Безопасность и ограничения</h3>
+                    <p>Файловое серверное хранение упрощает перенос между браузерами, но не заменяет промышленную защиту. Пароль не сохраняется, а валидация URL и формы профиля выполняется на клиенте и дополнительно фильтруется сервером. Для отчёта важно фиксировать, что проект демонстрирует корректные UX-подходы, но не реализует полноценную аутентификацию и контроль доступа.</p>
+                </article>
+                <article class="info-block">
+                    <h3>Пользовательские сценарии</h3>
+                    <p>Базовый сценарий включает регистрацию/вход, заполнение профиля, загрузку фотографий и добавление внешних сервисов для публикации работ. Дополнительно пользователь может перейти к политике конфиденциальности, изучить справку и проверить знания по функционалу в квизе. Это расширяет проект от простого лендинга до учебной платформы с несколькими модулями.</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="card timeline-card">
+            <h2 class="page-title">Таймлайн развития FrameFlow</h2>
+            <ol class="timeline-list">
+                <li>
+                    <h3>Этап 1. Базовая структура сайта</h3>
+                    <p>Созданы основные страницы, навигация, контакты и первичная верстка интерфейса.</p>
+                </li>
+                <li>
+                    <h3>Этап 2. Галерея и работа с изображениями</h3>
+                    <p>Добавлена стандартная лента и пользовательская загрузка фотографий с локальным сохранением.</p>
+                </li>
+                <li>
+                    <h3>Этап 3. Личный кабинет</h3>
+                    <p>Реализована форма профиля с валидацией полей и хранением персональных данных без пароля.</p>
+                </li>
+                <li>
+                    <h3>Этап 4. Раздел «Мои сервисы»</h3>
+                    <p>Добавлены URL-валидация, нормализация ссылок, удаление и проверка дублирующихся записей.</p>
+                </li>
+                <li>
+                    <h3>Этап 5. Отчётное усложнение</h3>
+                    <p>Добавлены крупные контентные блоки, FAQ-аккордеон, учебный квиз и детальная документация сложностей.</p>
+                </li>
+            </ol>
+        </section>
+
+        <section class="card faq-card">
+            <h2 class="page-title">FAQ по платформе</h2>
+            <div class="faq-list" id="faq-list">
+                <article class="faq-item">
+                    <button class="faq-question" type="button">1. Нужно ли подключение к серверу, чтобы сайт работал?</button>
+                    <div class="faq-answer"><p>Да. Для сохранения пользовательских данных теперь нужен запущенный Node.js сервер. База данных при этом не требуется.</p></div>
+                </article>
+                <article class="faq-item">
+                    <button class="faq-question" type="button">2. Где сохраняются загруженные фотографии?</button>
+                    <div class="faq-answer"><p>Изображения конвертируются в Data URL и сохраняются в JSON-хранилище на Node.js сервере проекта.</p></div>
+                </article>
+                <article class="faq-item">
+                    <button class="faq-question" type="button">3. Почему у галереи есть лимиты по размеру и количеству?</button>
+                    <div class="faq-answer"><p>Лимиты помогают контролировать размер JSON-файла и снижать нагрузку на сеть и сервер при загрузке изображений.</p></div>
+                </article>
+                <article class="faq-item">
+                    <button class="faq-question" type="button">4. Сохраняется ли пароль из профиля?</button>
+                    <div class="faq-answer"><p>Нет. Пароль используется только в форме и очищается после сохранения профиля для повышения безопасности демонстрационной версии.</p></div>
+                </article>
+                <article class="faq-item">
+                    <button class="faq-question" type="button">5. Что делает раздел «Мои сервисы»?</button>
+                    <div class="faq-answer"><p>Раздел хранит ссылки на внешние фотоплощадки. Ввод проходит проверку URL, а дубли ссылок не добавляются.</p></div>
+                </article>
+                <article class="faq-item">
+                    <button class="faq-question" type="button">6. Какие ограничения у подхода без базы данных?</button>
+                    <div class="faq-answer"><p>Хранение в JSON-файле подходит для учебных задач, но ограничено по масштабируемости, безопасности и параллельной работе пользователей.</p></div>
+                </article>
+                <article class="faq-item">
+                    <button class="faq-question" type="button">7. Можно ли перенести данные в другой браузер?</button>
+                    <div class="faq-answer"><p>Да, через ручной экспорт/import JSON (если реализован) или через перенос локальных данных браузера, но это не автоматизировано.</p></div>
+                </article>
+                <article class="faq-item">
+                    <button class="faq-question" type="button">8. Для чего нужен квиз на главной странице?</button>
+                    <div class="faq-answer"><p>Квиз проверяет понимание ключевых модулей платформы и служит интерактивной частью отчётной демонстрации проекта.</p></div>
+                </article>
+            </div>
+        </section>
+
+        <section class="card quiz-card">
+            <h2 class="page-title">Мини-квиз по FrameFlow</h2>
+            <p class="muted-note">Ответьте на вопросы о функционале сайта. Лучший результат сохраняется локально.</p>
+
+            <form id="quiz-form" class="quiz-form">
+                <fieldset class="quiz-question">
+                    <legend>1. Где в проекте хранятся пользовательские фото?</legend>
+                    <label><input type="radio" name="q1" value="1" required> В JSON-файле через Node.js API</label>
+                    <label><input type="radio" name="q1" value="0"> В облачной базе данных</label>
+                    <label><input type="radio" name="q1" value="0"> Только в памяти страницы</label>
+                </fieldset>
+
+                <fieldset class="quiz-question">
+                    <legend>2. Какой формат URL поддерживает раздел «Мои сервисы»?</legend>
+                    <label><input type="radio" name="q2" value="1" required> Только http:// и https://</label>
+                    <label><input type="radio" name="q2" value="0"> Любой текст</label>
+                    <label><input type="radio" name="q2" value="0"> Только ссылки на соцсети</label>
+                </fieldset>
+
+                <fieldset class="quiz-question">
+                    <legend>3. Что происходит с паролем после сохранения профиля?</legend>
+                    <label><input type="radio" name="q3" value="1" required> Он очищается и не сохраняется</label>
+                    <label><input type="radio" name="q3" value="0"> Хранится в localStorage</label>
+                    <label><input type="radio" name="q3" value="0"> Отправляется в JSON-файл</label>
+                </fieldset>
+
+                <fieldset class="quiz-question">
+                    <legend>4. Почему добавлены лимиты на размер фото?</legend>
+                    <label><input type="radio" name="q4" value="1" required> Чтобы контролировать размер JSON и нагрузку на сервер</label>
+                    <label><input type="radio" name="q4" value="0"> Чтобы ускорить интернет у пользователя</label>
+                    <label><input type="radio" name="q4" value="0"> Чтобы уменьшить размер CSS</label>
+                </fieldset>
+
+                <fieldset class="quiz-question">
+                    <legend>5. Какой подход реализован в этом проекте?</legend>
+                    <label><input type="radio" name="q5" value="1" required> Frontend + Node.js backend без БД</label>
+                    <label><input type="radio" name="q5" value="0"> Микросервисы + Kubernetes</label>
+                    <label><input type="radio" name="q5" value="0"> SPA с удалённой БД и API</label>
+                </fieldset>
+
+                <fieldset class="quiz-question">
+                    <legend>6. Для чего нужен FAQ-аккордеон?</legend>
+                    <label><input type="radio" name="q6" value="1" required> Для структурированной справки по модулю</label>
+                    <label><input type="radio" name="q6" value="0"> Для хранения фотографий</label>
+                    <label><input type="radio" name="q6" value="0"> Для регистрации пользователя</label>
+                </fieldset>
+
+                <fieldset class="quiz-question">
+                    <legend>7. Что показывает таймлайн?</legend>
+                    <label><input type="radio" name="q7" value="1" required> Этапы развития проекта</label>
+                    <label><input type="radio" name="q7" value="0"> Текущую скорость интернета</label>
+                    <label><input type="radio" name="q7" value="0"> Список ошибок браузера</label>
+                </fieldset>
+
+                <div class="quiz-actions">
+                    <button type="submit" class="button">Проверить результат</button>
+                    <button type="reset" class="button button-secondary" id="quiz-reset-btn">Пройти заново</button>
+                </div>
+            </form>
+
+            <div class="quiz-result-box">
+                <p id="quiz-result" class="status-message" aria-live="polite"></p>
+                <p id="quiz-best" class="muted-note"></p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <p>&copy; 2026 FrameFlow. Все права защищены.</p>
+            <ul class="footer-links">
+                <li><a href="Cofedensi.html">Политика конфиденциальности</a></li>
+                <li><a href="Contats.HTML">Контакты</a></li>
+            </ul>
+        </div>
+    </footer>
+
+    <script>
+        (function () {
+            const QUIZ_STORAGE_KEY = "ff_quiz_best_v1";
+            const faqList = document.getElementById("faq-list");
+            const quizForm = document.getElementById("quiz-form");
+            const quizResult = document.getElementById("quiz-result");
+            const quizBest = document.getElementById("quiz-best");
+            const quizResetBtn = document.getElementById("quiz-reset-btn");
+            const totalQuestions = 7;
+
+            function updateBestText() {
+                const raw = localStorage.getItem(QUIZ_STORAGE_KEY);
+                if (!raw) {
+                    quizBest.textContent = "Лучший результат пока не зафиксирован.";
+                    return;
+                }
+
+                try {
+                    const parsed = JSON.parse(raw);
+                    if (typeof parsed.bestScore === "number" && typeof parsed.total === "number") {
+                        quizBest.textContent = "Лучший результат: " + parsed.bestScore + " из " + parsed.total + " (обновлено: " + new Date(parsed.updatedAt).toLocaleString("ru-RU") + ")";
+                        return;
+                    }
+                } catch (error) {
+                    // no-op
+                }
+
+                quizBest.textContent = "Лучший результат пока не зафиксирован.";
+            }
+
+            function scoreLabel(score) {
+                if (score <= 2) {
+                    return "Базовый уровень";
+                }
+                if (score <= 5) {
+                    return "Уверенный уровень";
+                }
+                return "Экспертный уровень";
+            }
+
+            faqList.addEventListener("click", function (event) {
+                const target = event.target;
+                if (!(target instanceof HTMLElement) || !target.classList.contains("faq-question")) {
+                    return;
+                }
+
+                const item = target.closest(".faq-item");
+                if (!item) {
+                    return;
+                }
+
+                item.classList.toggle("open");
+            });
+
+            quizForm.addEventListener("submit", function (event) {
+                event.preventDefault();
+
+                const formData = new FormData(quizForm);
+                if (formData.getAll("q1").length === 0 || formData.getAll("q2").length === 0 || formData.getAll("q3").length === 0 || formData.getAll("q4").length === 0 || formData.getAll("q5").length === 0 || formData.getAll("q6").length === 0 || formData.getAll("q7").length === 0) {
+                    quizResult.textContent = "Ответьте на все вопросы перед проверкой.";
+                    quizResult.className = "status-message status-error";
+                    return;
+                }
+
+                let score = 0;
+                for (let i = 1; i <= totalQuestions; i += 1) {
+                    score += Number(formData.get("q" + i) || 0);
+                }
+
+                quizResult.textContent = "Ваш результат: " + score + " из " + totalQuestions + ". " + scoreLabel(score) + ".";
+                quizResult.className = "status-message status-ok";
+
+                const raw = localStorage.getItem(QUIZ_STORAGE_KEY);
+                let currentBest = null;
+                try {
+                    currentBest = raw ? JSON.parse(raw) : null;
+                } catch (error) {
+                    currentBest = null;
+                }
+
+                if (!currentBest || typeof currentBest.bestScore !== "number" || score > currentBest.bestScore) {
+                    const payload = {
+                        bestScore: score,
+                        total: totalQuestions,
+                        updatedAt: new Date().toISOString()
+                    };
+                    localStorage.setItem(QUIZ_STORAGE_KEY, JSON.stringify(payload));
+                }
+
+                updateBestText();
+            });
+
+            quizResetBtn.addEventListener("click", function () {
+                quizResult.textContent = "";
+                quizResult.className = "status-message";
+            });
+
+            updateBestText();
+        })();
+    </script>
+</body>
+</html>

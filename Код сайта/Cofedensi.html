@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FrameFlow | Политика конфиденциальности</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="hero-block">
+            <div class="nav-left">
+                <img src="photo_for_profile/Logo.png" alt="Логотип FrameFlow">
+            </div>
+            <div class="nav-links">
+                <a href="login.html">Вход</a>
+                <a href="index.html">Главная</a>
+                <a href="profile.html">Профиль</a>
+                <a href="gallery.html">Галерея</a>
+            </div>
+            <div class="nav-social">
+                <a href="https://www.tiktok.com/@Soukog" target="_blank" rel="noopener noreferrer"><img src="photo_for_profile/tiktok-icon.svg" alt="TikTok" width="24"></a>
+                <a href="https://vk.com/id569348106" target="_blank" rel="noopener noreferrer"><img src="photo_for_profile/Vk SVG Icon.svg" alt="VK" width="24"></a>
+                <a href="https://t.me/Soukog06" target="_blank" rel="noopener noreferrer"><img src="photo_for_profile/telegram-svgrepo-com.svg" alt="Telegram" width="24"></a>
+            </div>
+        </nav>
+    </div>
+
+    <main class="container">
+        <section class="card policy-card">
+            <h1 class="page-title">Политика конфиденциальности FrameFlow</h1>
+            <p class="muted-note">Дата последнего обновления: 19 марта 2026 года.</p>
+
+            <article class="policy-section">
+                <h2>1. Общие положения</h2>
+                <p>Настоящая политика описывает, какие данные обрабатываются в учебном проекте FrameFlow, как они используются и какие ограничения имеет текущая версия платформы. Сайт работает в связке frontend + Node.js сервер без базы данных. Пользовательская информация сохраняется в JSON-файле серверной части.</p>
+            </article>
+
+            <article class="policy-section">
+                <h2>2. Какие данные могут сохраняться</h2>
+                <ul>
+                    <li><strong>Профиль пользователя:</strong> nickname, email и номер телефона, введённые в личном кабинете.</li>
+                    <li><strong>Пользовательская галерея:</strong> загруженные изображения, преобразованные в Data URL и записанные на сервере в JSON.</li>
+                    <li><strong>Мои сервисы:</strong> список внешних ссылок на фотосервисы, добавленных пользователем.</li>
+                    <li><strong>Учебные результаты:</strong> лучший результат мини-квиза на главной странице.</li>
+                </ul>
+            </article>
+
+            <article class="policy-section">
+                <h2>3. Где и как хранится информация</h2>
+                <p>В рамках текущей архитектуры данные сохраняются на Node.js сервере в файл <code>data/user-data.json</code>. Информация не передаётся третьим лицам автоматически. При удалении файла данных или остановке сервера часть пользовательских данных может быть недоступна до восстановления.</p>
+            </article>
+
+            <article class="policy-section">
+                <h2>4. Цели обработки</h2>
+                <ul>
+                    <li>Предоставление доступа к функциям профиля, галереи и раздела «Мои сервисы».</li>
+                    <li>Улучшение пользовательского опыта: быстрый повторный доступ к ранее введённым данным.</li>
+                    <li>Демонстрация в отчёте учебных подходов к валидации, хранению и отображению данных на клиенте.</li>
+                </ul>
+            </article>
+
+            <article class="policy-section">
+                <h2>5. Ограничения и риски</h2>
+                <p>Файловая архитектура удобна для учебного проекта, но имеет технологические ограничения. JSON-хранилище без БД не обеспечивает промышленный уровень отказоустойчивости и масштабируемости. Поэтому в проекте пароль не сохраняется, а данные рассматриваются как учебные и демонстрационные.</p>
+            </article>
+
+            <article class="policy-section">
+                <h2>6. Права пользователя</h2>
+                <ul>
+                    <li>Изменять и удалять данные через интерфейс сайта (профиль, сервисы, фотографии).</li>
+                    <li>Полностью очистить локальные данные в настройках браузера.</li>
+                    <li>Прекратить использование сайта без передачи персональных данных на внешний сервер.</li>
+                </ul>
+            </article>
+
+            <article class="policy-section">
+                <h2>7. Контакты</h2>
+                <p>По вопросам использования проекта и структуры хранения данных можно написать на почту: <a href="mailto:ivan06082008soukog.com@gmail.com">ivan06082008soukog.com@gmail.com</a> или связаться через Telegram: <a href="https://t.me/Soukog06" target="_blank" rel="noopener noreferrer">@Soukog06</a>.</p>
+            </article>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <p>&copy; 2026 FrameFlow. Все права защищены.</p>
+            <ul class="footer-links">
+                <li><a href="Cofedensi.html">Политика конфиденциальности</a></li>
+                <li><a href="Contats.HTML">Контакты</a></li>
+            </ul>
+        </div>
+    </footer>
+</body>
+</html>

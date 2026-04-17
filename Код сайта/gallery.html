@@ -1,0 +1,269 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FrameFlow | Галерея</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <nav class="hero-block">
+            <div class="nav-left">
+                <img src="photo_for_profile/Logo.png" alt="Логотип FrameFlow">
+            </div>
+            <div class="nav-links">
+                <a href="login.html">Вход</a>
+                <a href="index.html">Главная</a>
+                <a href="profile.html">Профиль</a>
+                <a href="gallery.html" class="active">Галерея</a>
+            </div>
+            <div class="nav-social">
+                <a href="https://www.tiktok.com/@Soukog" target="_blank" rel="noopener noreferrer"><img src="photo_for_profile/tiktok-icon.svg" alt="TikTok" width="24"></a>
+                <a href="https://vk.com/id569348106" target="_blank" rel="noopener noreferrer"><img src="photo_for_profile/Vk SVG Icon.svg" alt="VK" width="24"></a>
+                <a href="https://t.me/Soukog06" target="_blank" rel="noopener noreferrer"><img src="photo_for_profile/telegram-svgrepo-com.svg" alt="Telegram" width="24"></a>
+            </div>
+        </nav>
+    </div>
+
+    <main class="container">
+        <section class="card">
+            <h1 class="page-title">Галерея пользователя</h1>
+            <p class="muted-note">Загружайте свои фотографии без базы данных. Данные сохраняются на сервере Node.js.</p>
+
+            <div class="upload-panel">
+                <label for="photo-upload"><strong>Загрузить фото</strong> (до 12 фото, максимум 2 MB на файл):</label>
+                <input id="photo-upload" type="file" accept="image/*" multiple>
+                <p id="upload-status" class="status-message" aria-live="polite"></p>
+            </div>
+
+            <div class="gallery-section">
+                <h3>Стандартная лента</h3>
+                <div class="gallery" id="default-gallery">
+                    <div class="photo"><img src="img/2.webp" alt="Стандартное фото 1" loading="lazy"><div class="photo-caption">2.webp</div></div>
+                    <div class="photo"><img src="img/6.webp" alt="Стандартное фото 2" loading="lazy"><div class="photo-caption">6.webp</div></div>
+                    <div class="photo"><img src="img/8.webp" alt="Стандартное фото 3" loading="lazy"><div class="photo-caption">8.webp</div></div>
+                    <div class="photo"><img src="img/9.webp" alt="Стандартное фото 4" loading="lazy"><div class="photo-caption">9.webp</div></div>
+                    <div class="photo"><img src="img/10.webp" alt="Стандартное фото 5" loading="lazy"><div class="photo-caption">10.webp</div></div>
+                    <div class="photo"><img src="img/11.webp" alt="Стандартное фото 6" loading="lazy"><div class="photo-caption">11.webp</div></div>
+                    <div class="photo"><img src="img/12.webp" alt="Стандартное фото 7" loading="lazy"><div class="photo-caption">12.webp</div></div>
+                    <div class="photo"><img src="img/13.webp" alt="Стандартное фото 8" loading="lazy"><div class="photo-caption">13.webp</div></div>
+                    <div class="photo"><img src="img/14.webp" alt="Стандартное фото 9" loading="lazy"><div class="photo-caption">14.webp</div></div>
+                    <div class="photo"><img src="img/15.webp" alt="Стандартное фото 10" loading="lazy"><div class="photo-caption">15.webp</div></div>
+                    <div class="photo"><img src="img/16.webp" alt="Стандартное фото 11" loading="lazy"><div class="photo-caption">16.webp</div></div>
+                    <div class="photo"><img src="img/17.webp" alt="Стандартное фото 12" loading="lazy"><div class="photo-caption">17.webp</div></div>
+                    <div class="photo"><img src="img/18.webp" alt="Стандартное фото 13" loading="lazy"><div class="photo-caption">18.webp</div></div>
+                    <div class="photo"><img src="img/19.webp" alt="Стандартное фото 14" loading="lazy"><div class="photo-caption">19.webp</div></div>
+                    <div class="photo"><img src="img/20.webp" alt="Стандартное фото 15" loading="lazy"><div class="photo-caption">20.webp</div></div>
+                </div>
+            </div>
+
+            <div class="gallery-section">
+                <h3>Мои загруженные фото</h3>
+                <div id="user-gallery" class="gallery"></div>
+                <div id="empty-gallery" class="empty-box">Пока нет загруженных фото.</div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <p>&copy; 2026 FrameFlow. Все права защищены.</p>
+            <ul class="footer-links">
+                <li><a href="Cofedensi.html">Политика конфиденциальности</a></li>
+                <li><a href="Contats.HTML">Контакты</a></li>
+            </ul>
+        </div>
+    </footer>
+
+    <script>
+        (function () {
+            const API_USER_DATA = "/api/user-data";
+            const MAX_PHOTOS = 12;
+            const MAX_FILE_SIZE = 2 * 1024 * 1024;
+
+            const input = document.getElementById("photo-upload");
+            const status = document.getElementById("upload-status");
+            const userGallery = document.getElementById("user-gallery");
+            const emptyGallery = document.getElementById("empty-gallery");
+            let galleryCache = [];
+
+            function setStatus(message, isError) {
+                status.textContent = message;
+                status.className = "status-message " + (isError ? "status-error" : "status-ok");
+            }
+
+            async function fetchUserData() {
+                const response = await fetch(API_USER_DATA, { cache: "no-store" });
+                if (!response.ok) {
+                    throw new Error("server unavailable");
+                }
+                return response.json();
+            }
+
+            async function saveGalleryToServer(items) {
+                const response = await fetch("/api/user-data/gallery", {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(items)
+                });
+                if (!response.ok) {
+                    throw new Error("gallery save failed");
+                }
+            }
+
+            function renderUserGallery(items) {
+                userGallery.innerHTML = "";
+
+                if (items.length === 0) {
+                    emptyGallery.style.display = "block";
+                    return;
+                }
+
+                emptyGallery.style.display = "none";
+
+                items.forEach(function (item) {
+                    const wrapper = document.createElement("div");
+                    wrapper.className = "photo";
+
+                    const image = document.createElement("img");
+                    image.src = item.src;
+                    image.alt = item.name || "Загруженное фото";
+                    image.loading = "lazy";
+
+                    const caption = document.createElement("div");
+                    caption.className = "photo-caption";
+                    caption.textContent = item.name || "Без названия";
+
+                    const deleteBtn = document.createElement("button");
+                    deleteBtn.type = "button";
+                    deleteBtn.className = "delete-photo-btn";
+                    deleteBtn.dataset.id = item.id;
+                    deleteBtn.textContent = "Удалить";
+
+                    wrapper.appendChild(image);
+                    wrapper.appendChild(caption);
+                    wrapper.appendChild(deleteBtn);
+                    userGallery.appendChild(wrapper);
+                });
+            }
+
+            function readFileAsDataUrl(file) {
+                return new Promise(function (resolve, reject) {
+                    const reader = new FileReader();
+                    reader.onload = function () {
+                        resolve(reader.result);
+                    };
+                    reader.onerror = function () {
+                        reject(new Error("Не удалось прочитать файл"));
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            async function handleUpload() {
+                const files = Array.from(input.files || []);
+                if (files.length === 0) {
+                    return;
+                }
+
+                const nextGallery = galleryCache.slice();
+                let added = 0;
+                const errors = [];
+
+                for (const file of files) {
+                    if (nextGallery.length >= MAX_PHOTOS) {
+                        errors.push("Достигнут лимит в " + MAX_PHOTOS + " фото");
+                        break;
+                    }
+
+                    if (!file.type.startsWith("image/")) {
+                        errors.push(file.name + ": это не изображение");
+                        continue;
+                    }
+
+                    if (file.size > MAX_FILE_SIZE) {
+                        errors.push(file.name + ": размер больше 2 MB");
+                        continue;
+                    }
+
+                    try {
+                        const dataUrl = await readFileAsDataUrl(file);
+                        nextGallery.unshift({
+                            id: Date.now().toString(36) + "_" + Math.random().toString(36).slice(2),
+                            src: dataUrl,
+                            name: file.name,
+                            createdAt: new Date().toISOString()
+                        });
+                        added += 1;
+                    } catch (error) {
+                        errors.push(file.name + ": ошибка чтения файла");
+                    }
+                }
+
+                try {
+                    await saveGalleryToServer(nextGallery);
+                    galleryCache = nextGallery;
+                    renderUserGallery(galleryCache);
+                } catch (error) {
+                    setStatus("Ошибка сервера при сохранении фото. Проверьте Node.js сервер.", true);
+                    input.value = "";
+                    return;
+                }
+
+                if (errors.length > 0) {
+                    setStatus("Добавлено: " + added + ". " + errors[0], added === 0);
+                } else {
+                    setStatus("Успешно добавлено фото: " + added, false);
+                }
+
+                input.value = "";
+            }
+
+            async function handleDelete(event) {
+                const target = event.target;
+                if (!(target instanceof HTMLElement) || !target.classList.contains("delete-photo-btn")) {
+                    return;
+                }
+
+                const id = target.dataset.id;
+                if (!id) {
+                    return;
+                }
+
+                const nextGallery = galleryCache.filter(function (item) {
+                    return item.id !== id;
+                });
+
+                try {
+                    await saveGalleryToServer(nextGallery);
+                    galleryCache = nextGallery;
+                    renderUserGallery(galleryCache);
+                    setStatus("Фото удалено", false);
+                } catch (error) {
+                    setStatus("Ошибка сервера при удалении фото", true);
+                }
+            }
+
+            async function initialize() {
+                try {
+                    const data = await fetchUserData();
+                    galleryCache = Array.isArray(data && data.gallery) ? data.gallery : [];
+                    renderUserGallery(galleryCache);
+                } catch (error) {
+                    galleryCache = [];
+                    renderUserGallery(galleryCache);
+                    setStatus("Сервер недоступен. Запустите Node.js сервер.", true);
+                }
+            }
+
+            input.addEventListener("change", function () {
+                handleUpload();
+            });
+
+            userGallery.addEventListener("click", handleDelete);
+            initialize();
+        })();
+    </script>
+</body>
+</html>
